@@ -18,11 +18,27 @@ const addArticleQuery = async ({ title, content }) => {
     return await response.json();
 };
 
+const getArticles = async ({}) => {
+    const response = await fetch('http://localhost:8080/api/v1/articles/get/all', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWN6a293c2tpLmJhcnRla0BnbWFpbC5jb20iLCJleHAiOjE2OTAyNjc5NDgsImlhdCI6MTY5MDIzMTk0OH0.AYX7gT3Lg6fgsDYV76u1FFXD612oYsHPwE27QQFvsyw',
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to get articles', response);
+    }
+    return await response.json();
+};
+
 const Home = () => {
     const navigate = useNavigate();
     const { mutate: addArticle, isLoading, error } = useMutation(addArticleQuery)
+    const { mutate: getArt } = useMutation(getArticles)
     const redirectToLogin = () => navigate('/login')
     const onAddArticle = () => addArticle({ title: 'test', content: 'lipsum' })
+    const onGetArticles = () => getArt({})
     return (
         <div className='home-route'>
             <h1>homepage</h1>
@@ -31,6 +47,9 @@ const Home = () => {
             </div>
             <div>
                 <a onClick={onAddArticle}>add article</a>
+            </div>
+            <div>
+                <a onClick={onGetArticles}>Get articles</a>
             </div>
         </div>
     )
