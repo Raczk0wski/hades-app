@@ -2,13 +2,14 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query';
 import './Home.css'
+import myFetch from '../../../api/fetch'
 
 const addArticleQuery = async ({ title, content }) => {
-    const response = await fetch('http://localhost:8080/api/v1/articles/add', {
+    console.log("Add article button clicked");
+    const response = fetch('http://localhost:8080/api/v1/articles/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWN6a293c2tpLmJhcnRla0BnbWFpbC5jb20iLCJleHAiOjE2OTAyNjc5NDgsImlhdCI6MTY5MDIzMTk0OH0.AYX7gT3Lg6fgsDYV76u1FFXD612oYsHPwE27QQFvsyw',
         },
         body: JSON.stringify({ title, content }),
     });
@@ -19,11 +20,11 @@ const addArticleQuery = async ({ title, content }) => {
 };
 
 const getArticles = async ({}) => {
+    console.log("Add article button clicked");
     const response = await fetch('http://localhost:8080/api/v1/articles/get/all', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWN6a293c2tpLmJhcnRla0BnbWFpbC5jb20iLCJleHAiOjE2OTAyNjc5NDgsImlhdCI6MTY5MDIzMTk0OH0.AYX7gT3Lg6fgsDYV76u1FFXD612oYsHPwE27QQFvsyw',
         },
     });
     if (!response.ok) {
