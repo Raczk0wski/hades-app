@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {
   QueryClient,
   QueryClientProvider,
@@ -13,7 +14,7 @@ import './App.css';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/Home",
     element: <Home />,
   },
   {
@@ -28,7 +29,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
     <div className="App">
-      <h1> hello </h1>
       <RouterProvider router={router} />
     </div>
   </QueryClientProvider>

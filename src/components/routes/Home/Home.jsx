@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query';
 import './Home.css'
 
+const token = localStorage.token
+
 const addArticleQuery = async ({ title, content }) => {
     const response = await fetch('http://localhost:8080/api/v1/articles/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWN6a293c2tpLmJhcnRla0BnbWFpbC5jb20iLCJleHAiOjE2OTAyNjc5NDgsImlhdCI6MTY5MDIzMTk0OH0.AYX7gT3Lg6fgsDYV76u1FFXD612oYsHPwE27QQFvsyw',
+            'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ title, content }),
     });
@@ -18,12 +20,12 @@ const addArticleQuery = async ({ title, content }) => {
     return await response.json();
 };
 
-const getArticles = async ({}) => {
-    const response = await fetch('http://localhost:8080/api/v1/articles/get/all', {
+const getArticles = async ({ }) => {
+    const response = await fetch('http://localhost:8080/api/v1/articles/get/from/?id=2', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWN6a293c2tpLmJhcnRla0BnbWFpbC5jb20iLCJleHAiOjE2OTAyNjc5NDgsImlhdCI6MTY5MDIzMTk0OH0.AYX7gT3Lg6fgsDYV76u1FFXD612oYsHPwE27QQFvsyw',
+            'Authorization': `Bearer ${token}`,
         },
     });
     if (!response.ok) {
@@ -34,22 +36,29 @@ const getArticles = async ({}) => {
 
 const Home = () => {
     const navigate = useNavigate();
-    const { mutate: addArticle, isLoading, error } = useMutation(addArticleQuery)
+    if(!localStorage.getItem('token')){
+        navigate('/login')
+    }
+    const { mutate: addArticle } = useMutation(addArticleQuery)
     const { mutate: getArt } = useMutation(getArticles)
-    const redirectToLogin = () => navigate('/login')
+    const logOut = () => {
+        navigate('/LogIn')
+        localStorage.removeItem('token');
+    }
     const onAddArticle = () => addArticle({ title: 'test', content: 'lipsum' })
     const onGetArticles = () => getArt({})
+    
     return (
         <div className='home-route'>
             <h1>homepage</h1>
             <div>
-                <a onClick={redirectToLogin}>go to login</a>
+                <button className='login-button' onClick={onAddArticle}>Add article</button>
             </div>
             <div>
-                <a onClick={onAddArticle}>add article</a>
+                <button className='login-button' onClick={onGetArticles}>Get articles</button>
             </div>
             <div>
-                <a onClick={onGetArticles}>Get articles</a>
+                <button className='log-out-button' onClick={logOut}>log out</button>
             </div>
         </div>
     )
