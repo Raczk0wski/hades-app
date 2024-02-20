@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import useError from '../../Common/useError';
+import useError from '../../Common/Errors/useError';
 import './LogIn.css';
 
 const LogIn = () => {
     const { error, showErrorModal, closeErrorModal } = useError();
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -17,6 +18,7 @@ const LogIn = () => {
     const registrationRequest = async (event) => {
         event.preventDefault();
         try {
+            setLoading(true)
             const response = await fetch('http://localhost:8080/api/v1/registration', {
                 method: 'POST',
                 cache: 'no-cache',
@@ -27,11 +29,12 @@ const LogIn = () => {
                 },
                 body: JSON.stringify({ firstName, lastName, email, password }),
             });
+            setLoading(false)
 
             if (!response.ok) {
                 const errorData = await response.json();
                 showErrorModal(errorData.description);
-            } else if (response.status(200)){
+            } else if (response.status(200)) {
                 setEmail('');
                 setFirstName('');
                 setLastName('');
@@ -46,6 +49,7 @@ const LogIn = () => {
     const loginRequest = async (event) => {
         event.preventDefault();
         try {
+            setLoading(true)
             const response = await fetch('http://localhost:8080/api/v1/auth/authenticate', {
                 method: 'POST',
                 headers: {
@@ -53,7 +57,7 @@ const LogIn = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
+            setLoading(false)
             if (!response.ok) {
                 const errorData = await response.json();
                 showErrorModal(errorData.description);
@@ -77,6 +81,7 @@ const LogIn = () => {
             <input type="checkbox" id="chk" aria-hidden="true" />
 
             <div className="signup">
+                {loading && <div>loading</div>}
                 <form>
                     <label htmlFor="chk" aria-hidden="false">Sign up</label>
                     <input
@@ -116,6 +121,7 @@ const LogIn = () => {
             </div>
 
             <div className="login">
+                {loading && <div>loading</div>}
                 <form>
                     <label htmlFor="chk" aria-hidden="true">Login</label>
                     <input
