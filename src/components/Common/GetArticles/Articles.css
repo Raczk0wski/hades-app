@@ -1,5 +1,5 @@
 .Article {
-    background-color: rgb(125, 133, 137);
+    background-color: rgb(199, 210, 216);
     width: 1000px;
     height: auto;
     max-width: 1000px;
@@ -25,4 +25,8 @@
     text-align: right;
     font-size: 12px;
     font-weight: bold;
+}
+
+.aricle-list{
+    position:fixed
 }

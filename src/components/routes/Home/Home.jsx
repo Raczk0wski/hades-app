@@ -14,14 +14,21 @@ const Home = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [creatingArticle, setCreatingArticle] = useState(false);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(1);
 
     const fetchArticles = async () => {
         try {
-            const data = await getArticles({ page: 1 });
+            console.log(itemsPerPage)
+            const data = await getArticles({ page: currentPage, items: itemsPerPage });
             setArticles(data.items);
             setShowArticles(true);
             setShowForm(false);
             setCreatingArticle(false);
+            setTotalPages(data.meta.totalPages);
+            setTotalItems(data.meta.totalItems);
         } catch (error) {
             console.error('Error fetching articles:', error);
         }
@@ -59,22 +66,35 @@ const Home = () => {
         setShowArticles(false);
     };
 
+    const goToPage = (page) => {
+        setCurrentPage(page);
+    };
+
     const showGetArticlesButton = !showForm && !showArticles;
 
     useEffect(() => {
-    }, []);
+        fetchArticles();
+    }, [itemsPerPage, currentPage]);
 
     return (
         <div>
             <div className='home'>
                 <container className='navButtons'>
                     <div>
-                        {showGetArticlesButton && <button className='button' onClick={fetchArticles}>Get articles</button>}
+                        {showGetArticlesButton && <button className='button' onClick={fetchArticles}>Articles</button>}
                     </div>
                     {showArticles &&
-                        <div className='close-container'>
+                        <container className='main-container'>
+                            <div>
+                                <select className='pagination-select' id="itemsPerPage" value={itemsPerPage} onChange={(e) => setItemsPerPage(e.target.value)}>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
+                                    <option value={20}>20</option>
+                                </select>
+                            </div>
                             <button className='close-button' onClick={reset}>close</button>
-                        </div>}
+                        </container>
+                    }
                     <div>
                         {showArticles && !creatingArticle && articles.length > 0 && <ArticleList articles={articles} />}
                     </div>
@@ -85,9 +105,24 @@ const Home = () => {
                     <div className='formContainer'>
                         {showForm && <CreateArticleForm onSuccess={reset} onCancel={cancelForm} onTitleChange={handleTitleChange} onContentChange={handleContentChange} />}
                     </div>
-                    <div>
+                    {showArticles && (
+                        <div>
+                            <div className='pagination'>
+                                {Array.from({ length: totalPages }, (_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => goToPage(index + 1)}
+                                        className={currentPage === index + 1 ? 'active' : ''}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    {!showArticles && showGetArticlesButton && <div>
                         <button className='button' onClick={logOut}>log out</button>
-                    </div>
+                    </div>}
                 </container>
             </div>
         </div >

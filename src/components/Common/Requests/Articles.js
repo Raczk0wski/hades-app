@@ -1,5 +1,5 @@
-export const getArticles = async ({ page = 1 } = {}) => {
-    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/all?page=${page}&size=100&sortBy=postedDate&sort=desc`, {
+export const getArticles = async ({ page = 1 , items =10 } = {}) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/all?page=${page}&size=${items}&sortBy=postedDate&sort=desc`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -28,8 +28,7 @@ export const addArticle = async (title, content) => {
 };
 
 async function interceptedFetch(url, options) {
-
-
+    
     const response = await fetch(url, options);
 
     if (response.status === 401) {

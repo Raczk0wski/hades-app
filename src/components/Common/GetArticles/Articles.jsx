@@ -18,7 +18,7 @@ const ArticleList = ({ articles }) => {
     }
 
     return (
-        <ol>
+        <div className='article-list'>
             <h1 className='list-title'>Lista Artykułów</h1>
             {articles.map((article, index) => (
                 <div key={article.id} className={`Article article-${index + 1}`}>
@@ -28,8 +28,7 @@ const ArticleList = ({ articles }) => {
                     <p className='likes'>{"likes: " + article.likesCount}</p>
                 </div>
             ))}
-
-        </ol>
+        </div>
     );
 };
 

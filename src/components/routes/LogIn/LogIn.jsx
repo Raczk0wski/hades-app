@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import useError from '../../Common/Errors/useError';
 import './LogIn.css';
+import { registartionRequest , loginRequest} from '../../Common/Requests/Auth';
 
 const LogIn = () => {
-    const { error, showErrorModal, closeErrorModal } = useError();
+    const { error, showErrorModal} = useError();
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,66 +16,35 @@ const LogIn = () => {
         setter(event.target.value);
     };
 
-    const registrationRequest = async (event) => {
+    const fetchRegistration = async (event) => {
         event.preventDefault();
-        try {
-            setLoading(true)
-            const response = await fetch('http://localhost:8080/api/v1/registration', {
-                method: 'POST',
-                cache: 'no-cache',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ firstName, lastName, email, password }),
-            });
-            setLoading(false)
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                showErrorModal(errorData.description);
-            } else if (response.status(200)) {
-                setEmail('');
-                setFirstName('');
-                setLastName('');
-                setPassword('');
-            }
-        } catch (error) {
-            console.error('Request failed:', error);
-            showErrorModal('Server error occurred.');
+        const response = await registartionRequest(firstName, lastName, email, password)
+        if (response === 200) {
+            setEmail('');
+            setFirstName('');
+            setLastName('');
+            setPassword('');
         }
     };
 
-    const loginRequest = async (event) => {
-        event.preventDefault();
-        try {
-            setLoading(true)
-            const response = await fetch('http://localhost:8080/api/v1/auth/authenticate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password }),
-            });
-            setLoading(false)
-            if (!response.ok) {
-                const errorData = await response.json();
-                showErrorModal(errorData.description);
-            } else {
-                const data = await response.json();
-                const token = data.token;
-                localStorage.setItem('token', token);
-                navigate('/home')
-            }
 
+    const fetchLogin = async (event) => {
+        event.preventDefault();
+
+        const response = await loginRequest(email, password)
+        console.log(response.status)
+        if (!response.status===200) {
+            const errorData = await response.json();
+            showErrorModal(errorData.description);
+        } else {
+            const data = await response.json();
+            const token = data.token;
+            localStorage.setItem('token', token);
             setEmail('');
             setPassword('');
-        } catch (error) {
-            console.error('Request failed:', error);
-            showErrorModal('Server error occurred.');
+            navigate('/home')
         }
-    };
+    }
 
     return (
         <div className="main">
@@ -116,7 +86,7 @@ const LogIn = () => {
                         onChange={(event) => handleInputChange(event, setPassword)}
                         required
                     />
-                    <button onClick={registrationRequest}>Sign up</button>
+                    <button onClick={fetchRegistration}>Sign up</button>
                 </form>
             </div>
 
@@ -140,7 +110,7 @@ const LogIn = () => {
                         onChange={(event) => handleInputChange(event, setPassword)}
                         required
                     />
-                    <button onClick={loginRequest}>Login</button>
+                    <button onClick={fetchLogin}>Login</button>
                     {error && <div className="error">{error}</div>}
                 </form>
             </div>
