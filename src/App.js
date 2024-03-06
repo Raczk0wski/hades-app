@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-query'
 import Home from './components/routes/Home'
 import LogIn from './components/routes/LogIn'
+import Profile  from './components/routes/User';
 import './App.css';
 
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <LogIn />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   }
 ]);
 

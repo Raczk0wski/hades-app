@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { addArticle } from '../../Common/Requests/Articles';
+import { addArticle } from '../Request/Requests';
 import './createArticle.css'
 
 const CreateArticleForm = ({ onSuccess, onCancel }) => {
@@ -21,7 +21,6 @@ const CreateArticleForm = ({ onSuccess, onCancel }) => {
             await addArticle(title, content);
             setTitle('');
             setContent('');
-            console.log("sukces")
             onSuccess();
         } catch (error) {
             console.error('Error creating article:', error);

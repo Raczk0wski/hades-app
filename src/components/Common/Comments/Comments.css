@@ -1,0 +1,34 @@
+.author-container .author-button{
+    background: transparent;
+    border: none;
+    width: auto;
+    height: auto;
+    margin-right: 0px;
+    font-size: 12px;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.author-container .date{
+    font-size: 10px;
+    padding-top: 18px;
+}
+
+.author-container .like-button {
+    width: 40px;
+    height: 20px;
+    margin-left: 10px;
+    font-size: 12px;
+    color: rgb(247, 243, 243);
+    transition: all 0.3s ease;
+    vertical-align: middle;
+  }
+
+  .author-container .likes{
+    padding-top: 5px;
+  }
+
+  .content{
+
+  }

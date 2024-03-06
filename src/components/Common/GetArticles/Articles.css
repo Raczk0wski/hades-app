@@ -21,12 +21,81 @@
     text-align: left;
 }
 
-.author {
-    text-align: right;
-    font-size: 12px;
-    font-weight: bold;
-}
 
 .aricle-list{
     position:fixed
 }
+
+.author-container {
+    display: flex;
+  }
+
+  .author-container .author-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    height: auto;
+    margin-right: 0px;
+    font-size: 16px;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+  }
+  
+  .author-button:hover {
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  .author-container .date {
+    padding-top: 11px;
+    font-size:12px;
+  }
+
+  .likes-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .likes-container .likes {
+    padding-top: 10px;
+    vertical-align: middle;
+  }
+
+  .likes-container .like-button {
+    width: 40px;
+    height: 20px;
+    margin-left: 10px;
+    font-size: 12px;
+    color: rgb(247, 243, 243);
+    transition: all 0.3s ease;
+    vertical-align: middle;
+  }
+
+  .likes-container .like-button:hover {
+      background-color: rgb(48, 229, 156);
+  }
+  
+  .likes-container .like-button.liked {
+    background-color: rgb(255, 0, 0);
+  }
+
+  .likes-container .like-button.liked:hover {
+    background-color: rgb(163, 4, 4);
+  }
+
+  .likes-container .comment-button{
+    background-color: transparent;
+    color: rgb(116, 55, 173);
+    width: auto;
+    height: auto;
+    margin-right: 100px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .likes-container .comment-button:hover {
+    background-color: transparent;
+    text-decoration: underline;
+  }

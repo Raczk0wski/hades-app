@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import useError from '../../Common/Errors/useError';
 import './LogIn.css';
-import { registartionRequest , loginRequest} from '../../Common/Requests/Auth';
+import { registartionRequest , loginRequest} from '../../Common/Request/Auth';
 
 const LogIn = () => {
     const { error, showErrorModal} = useError();
@@ -27,12 +27,10 @@ const LogIn = () => {
         }
     };
 
-
     const fetchLogin = async (event) => {
         event.preventDefault();
 
         const response = await loginRequest(email, password)
-        console.log(response.status)
         if (!response.status===200) {
             const errorData = await response.json();
             showErrorModal(errorData.description);
@@ -40,6 +38,7 @@ const LogIn = () => {
             const data = await response.json();
             const token = data.token;
             localStorage.setItem('token', token);
+            localStorage.setItem('userId', data.user.id);
             setEmail('');
             setPassword('');
             navigate('/home')

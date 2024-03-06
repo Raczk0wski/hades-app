@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ArticleList from '../../Common/GetArticles/Articles';
-import { getArticles } from '../../Common/Requests/Articles';
+import { getArticles, getUser } from '../../Common/Request/Requests';
 import CreateArticleForm from '../../Common/Forms/createArticle';
 import './Home.css'
 import '../../Common/Forms/createArticle.css'
 
 const Home = () => {
     const navigate = useNavigate();
+    const [userName, setUserName] = useState('');
     const [articles, setArticles] = useState([]);
     const [showArticles, setShowArticles] = useState(false);
     const [showForm, setShowForm] = useState(false);
@@ -21,7 +22,6 @@ const Home = () => {
 
     const fetchArticles = async () => {
         try {
-            console.log(itemsPerPage)
             const data = await getArticles({ page: currentPage, items: itemsPerPage });
             setArticles(data.items);
             setShowArticles(true);
@@ -72,13 +72,22 @@ const Home = () => {
 
     const showGetArticlesButton = !showForm && !showArticles;
 
+    const userData = async () => {
+        const res = await getUser(localStorage.userId);
+        setUserName(res.firstName)
+    }
+
     useEffect(() => {
-        fetchArticles();
+        userData()
+        if (showArticles) {
+            fetchArticles();
+        }
     }, [itemsPerPage, currentPage]);
 
     return (
         <div>
             <div className='home'>
+                {!showArticles && showGetArticlesButton && <h1>Witaj, {userName}</h1>}
                 <container className='navButtons'>
                     <div>
                         {showGetArticlesButton && <button className='button' onClick={fetchArticles}>Articles</button>}
@@ -96,7 +105,7 @@ const Home = () => {
                         </container>
                     }
                     <div>
-                        {showArticles && !creatingArticle && articles.length > 0 && <ArticleList articles={articles} />}
+                        {showArticles && !creatingArticle && articles.length > 0 && <ArticleList articlesProp={articles} />}
                     </div>
 
                     <div>
@@ -120,6 +129,9 @@ const Home = () => {
                             </div>
                         </div>
                     )}
+                    {!showArticles && showGetArticlesButton && <div>
+                        <button className='button' onClick={logOut}>Your profile</button>
+                    </div>}
                     {!showArticles && showGetArticlesButton && <div>
                         <button className='button' onClick={logOut}>log out</button>
                     </div>}

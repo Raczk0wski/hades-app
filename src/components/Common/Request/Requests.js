@@ -27,6 +27,20 @@ export const addArticle = async (title, content) => {
     }
 };
 
+export const getUser = async (id) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/users/get?id=${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch articles', response);
+    }
+    return response;
+};
+
 async function interceptedFetch(url, options) {
     
     const response = await fetch(url, options);
