@@ -74,7 +74,8 @@ const Home = () => {
 
     const userData = async () => {
         const res = await getUser(localStorage.userId);
-        setUserName(res.firstName)
+        const data = await res.json()
+        setUserName(data.firstName)
     }
 
     useEffect(() => {
@@ -87,7 +88,7 @@ const Home = () => {
     return (
         <div>
             <div className='home'>
-                {!showArticles && showGetArticlesButton && <h1>Witaj, {userName}</h1>}
+                {!showArticles && showGetArticlesButton && <h1 className='main-copy'>Witaj, {userName}</h1>}
                 <container className='navButtons'>
                     <div>
                         {showGetArticlesButton && <button className='button' onClick={fetchArticles}>Articles</button>}
