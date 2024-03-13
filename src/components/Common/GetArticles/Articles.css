@@ -1,101 +1,189 @@
 .Article {
-    background-color: rgb(199, 210, 216);
-    width: 1000px;
-    height: auto;
-    max-width: 1000px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border-radius: 20px;
+  background-color: rgb(199, 210, 216);
+  width: 1000px;
+  height: auto;
+  max-width: 1000px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 20px;
 }
 
 .list-title {
-    font-size: 24px;
-    color: antiquewhite;
+  font-size: 24px;
+  color: antiquewhite;
 }
 
 .title {
-    text-align: left;
+  text-align: left;
 }
 
 .content {
-    text-align: left;
+  text-align: left;
 }
 
 
-.aricle-list{
-    position:fixed
+.aricle-list {
+  position: fixed
 }
 
 .author-container {
-    display: flex;
-  }
+  display: flex;
+}
 
-  .author-container .author-button {
-    background: transparent;
-    border: none;
-    width: auto;
-    height: auto;
-    margin-right: 0px;
-    font-size: 16px;
-    cursor: pointer;
-    color: rgb(0, 0, 0);
-    transition: all 0.3s ease;
-  }
-  
-  .author-button:hover {
-    background-color: transparent;
-    text-decoration: underline;
-  }
-  
-  .author-container .date {
-    padding-top: 11px;
-    font-size:12px;
-  }
+.author-container .article-author-button {
+  background: transparent;
+  border: none;
+  width: auto;
+  height: auto;
+  margin-right: 0px;
+  font-size: 16px;
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
+}
 
-  .likes-container {
-    display: flex;
-    align-items: center;
-  }
+.article-author-button:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
 
-  .likes-container .likes {
-    padding-top: 10px;
-    vertical-align: middle;
-  }
+.author-container .article-author-date {
+  padding-top: 11px;
+  font-size: 12px;
+}
 
-  .likes-container .like-button {
-    width: 40px;
-    height: 20px;
-    margin-left: 10px;
-    font-size: 12px;
-    color: rgb(247, 243, 243);
-    transition: all 0.3s ease;
-    vertical-align: middle;
-  }
+.likes-container {
+  display: flex;
+  align-items: center;
+}
 
-  .likes-container .like-button:hover {
-      background-color: rgb(48, 229, 156);
-  }
-  
-  .likes-container .like-button.liked {
-    background-color: rgb(255, 0, 0);
-  }
+.likes-container .likes {
+  padding-top: 10px;
+  vertical-align: middle;
+}
 
-  .likes-container .like-button.liked:hover {
-    background-color: rgb(163, 4, 4);
-  }
+.likes-container .like-button {
+  width: 40px;
+  height: 20px;
+  margin-left: 10px;
+  font-size: 12px;
+  background-color: rgb(116, 55, 173);
+  color: rgb(247, 243, 243);
+  transition: all 0.3s ease;
+  vertical-align: middle;
+}
 
-  .likes-container .comment-button{
-    background-color: transparent;
-    color: rgb(116, 55, 173);
-    width: auto;
-    height: auto;
-    margin-right: 100px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+.likes-container .like-button:hover {
+  background-color: rgb(48, 229, 156);
+}
 
-  .likes-container .comment-button:hover {
-    background-color: transparent;
-    text-decoration: underline;
-  }
+.likes-container .like-button.liked {
+  background-color: rgb(255, 0, 0);
+}
+
+.likes-container .like-button.liked:hover {
+  background-color: rgb(163, 4, 4);
+}
+
+.likes-container .comment-button {
+  background-color: transparent;
+  color: rgb(116, 55, 173);
+  width: auto;
+  height: auto;
+  margin-right: 100px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.likes-container .comment-button:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 0px;
+  margin-bottom: 10px;
+  /* Dodatkowy margines między tytułem a treścią */
+}
+
+.edit-button {
+  background-color: rgb(116, 55, 173);
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  top: 0;
+  right: 0;
+  margin-right: 50px;
+  width: 40px;
+  height: 20px;
+}
+
+.edit-button:hover {
+  background-color: rgb(48, 229, 156);
+  text-decoration: underline;
+}
+
+.article-save-button {
+  background-color: rgb(48, 229, 156);
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  top: 0;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-left: 20px;
+  width: 200px;
+  height: 40px;
+}
+
+.article-save-button:hover {
+  background-color: rgb(51, 155, 113);
+  text-decoration: underline;
+}
+
+.article-close-button {
+  background-color: rgb(230, 5, 54);
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0px;
+  top: 0;
+  right: 0;
+  margin-left: 20px;
+  width: 200px;
+  height: 40px;
+}
+
+.article-close-button:hover {
+  background-color: rgb(230, 5, 54);
+  text-decoration: underline;
+}
+
+.editTitleInput{
+  border-radius: 10px;
+  background-color: aliceblue;
+  width: 550px;
+  display: block; 
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.editContentInput{
+  border-radius: 10px;
+  height: 300px;
+  resize: none;
+  padding: 10px;
+  font-size: 16px;
+  display: block;
+  width: 980px;
+  margin: 0;
+}

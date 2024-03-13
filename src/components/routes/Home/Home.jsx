@@ -5,6 +5,7 @@ import { getArticles, getUser } from '../../Common/Request/Requests';
 import CreateArticleForm from '../../Common/Forms/createArticle';
 import './Home.css'
 import '../../Common/Forms/createArticle.css'
+import getComments from '../../Common/Request/Comments';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -85,6 +86,23 @@ const Home = () => {
         }
     }, [itemsPerPage, currentPage]);
 
+    const handleAuthorClick = async (authorId) => {
+        //setLoading(true);
+        try {
+            const response = await getUser(authorId);
+            if (response.ok) {
+                const userData = await response.json();
+                navigate('/profile', { state: { authorData: userData } });
+            } else {
+                console.error('Failed to fetch user data:', response);
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        } finally {
+            //setLoading(false);
+        }
+    };
+
     return (
         <div>
             <div className='home'>
@@ -131,7 +149,7 @@ const Home = () => {
                         </div>
                     )}
                     {!showArticles && showGetArticlesButton && <div>
-                        <button className='button' onClick={logOut}>Your profile</button>
+                        <button className='button' onClick={() => handleAuthorClick(localStorage.userId)}>Your profile</button>
                     </div>}
                     {!showArticles && showGetArticlesButton && <div>
                         <button className='button' onClick={logOut}>log out</button>
