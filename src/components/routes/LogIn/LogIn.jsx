@@ -38,7 +38,6 @@ const LogIn = () => {
             const data = await response.json();
             const token = data.token;
             localStorage.setItem('token', token);
-            localStorage.setItem('userId', data.user.id);
             setEmail('');
             setPassword('');
             navigate('/home')

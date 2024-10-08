@@ -1,0 +1,18 @@
+.Trash {
+    cursor: pointer;
+    color: rgb(12, 10, 10); 
+    font-size: 20px;  
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-top: 15px;
+    display: flex;
+    margin-left: auto;
+    margin-right: 20px;
+    align-self: flex-end;
+}
+
+.Trash:hover {
+    transform: scale(1.1); 
+    background-color: rgba(255, 0, 0, 0.2);
+    border-radius: 40%;
+    padding: 1px;
+  }

@@ -1,3 +1,61 @@
-.comment-fomr{
+.comment-fomr {
     width: 1000px;
+}
+
+.Comment-content {
+    border-radius: 10px;
+    height: 25px;
+    resize: none;
+    padding: 10px;
+    font-size: 16px;
+    display: block;
+    width: 980px;
+    margin: 0;
+}
+
+.Comment-content.active {
+    height: 150px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Comment-save {
+    background-color: rgb(48, 229, 156);
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    top: 0;
+    margin-top: 20px;
+    margin-right: 20px;
+    width: 100px;
+    height: 40px;
+}
+
+.Comment-save:hover {
+    background-color: rgb(51, 155, 113);
+    text-decoration: underline;
+}
+
+.Comment-cancel {
+    background-color: rgb(230, 5, 54);
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    top: 0;
+    right: 0;
+    margin-left: 760px;
+    width: 100px;
+    height: 40px;
+}
+
+.Comment-cancel:hover {
+    background-color: #d32f2f;
 }

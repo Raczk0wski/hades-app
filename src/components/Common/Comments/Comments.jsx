@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getComments } from '../Request/Comments';
+import { getComments, likeComment, deleteComment } from '../Request/Comments';
 import './Comments.css';
+import TrashIcon from './trash';
 
 function dateFormat(data) {
     const date = new Date(data);
@@ -16,46 +17,88 @@ const CommentList = ({ articleId }) => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchComments = async () => {
-            setLoading(true);
-            try {
-                const response = await getComments(articleId);
-                if (response.ok) {
-                    const responseData = await response.json();
-                    // Sprawdź, czy istnieje klucz items w odpowiedzi
-                    if (responseData.items) {
-                        // Jeśli klucz items istnieje, ustaw komentarze na jego wartość
-                        setComments(responseData.items);
-                    } else {
-                        console.error('Invalid comments data:', responseData);
-                    }
+    const fetchComments = async () => {
+        setLoading(true);
+        try {
+            const response = await getComments(articleId);
+            if (response.ok) {
+                const responseData = await response.json();
+                if (responseData.items) {
+                    setComments(responseData.items);
                 } else {
-                    console.error('Failed to fetch comments:', response);
+                    console.error('Invalid comments data:', responseData);
                 }
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-            } finally {
-                setLoading(false);
+            } else {
+                console.error('Failed to fetch comments:', response);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchComments();
     }, [articleId]);
 
+    const handleLikeClick = async (commentId, isLiked) => {
+        try {
+            setLoading(true);
+            const response = await likeComment(commentId);
 
-    const handleLikeClick = async (articleId) => { }
+            if (response.ok) {
+                const updatedComments = comments.map(comment => {
+                    if (comment.id === commentId) {
+                        return { ...comment, likesNumber: isLiked ? comment.likesNumber - 1 : comment.likesNumber + 1, liked: !isLiked };
+                    }
+                    return comment;
+                });
+                setComments(updatedComments);
+            } else {
+                console.error('Failed to handle like/unlike:', response);
+            }
+        } catch (error) {
+            console.error('Error handling like/unlike:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteClick = async (commentId) => {
+        try {
+            setLoading(true);
+            const response = await deleteComment(commentId);
+            if (response.ok) {
+                const updatedComments = comments.filter(comment => comment.id !== commentId);
+                setComments(updatedComments);
+            } else {
+                console.error('Failed to delete comment:', response);
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div>
             {comments.map((comment, index) => (
                 <div key={comment.id} className={`Comment comment-${index + 1}`}>
                     <hr />
-                    <p className='content'>{comment.content}</p>
-
+                    <div className='Main'>
+                        <p className='content'>{comment.content}</p>
+                        <div className='delete-icon'>
+                        {comment.author.id === parseInt(localStorage.userId) && (
+                            <TrashIcon onClick={() => handleDeleteClick(comment.id)}></TrashIcon>
+                        )}
+                        </div>
+                    </div>
                     <div className="author-container">
                         <p className='likes'>{"Likes: " + comment.likesNumber}</p>
-                        <button className={`like-button ${comment.isLiked ? 'liked' : ''}`} onClick={() => handleLikeClick(comment.id)}>
-                            {comment.isLiked ? 'Liked' : 'Like'}
+                        <button className={`like-button ${comment.liked ? 'liked' : ''}`} onClick={() => handleLikeClick(comment.id, comment.liked)}>
+                            {comment.liked ? 'Liked' : 'Like'}
                         </button>
                         <button className='author-button'>{comment.author ? `${comment.author.firstName} ${comment.author.lastName}` : 'Unknown'}</button>
                         <p className='date'>{comment.updated ? `Edited: ${dateFormat(comment.updatedAt)}` : `Posted: ${dateFormat(comment.postedDate)}`}</p>

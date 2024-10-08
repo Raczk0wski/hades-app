@@ -1,0 +1,126 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1000px;
+    height: auto;
+    background-color: rgb(199, 210, 216);
+    margin: 200px 0;
+}
+
+.content-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start; /* Aby tekst nie był wyśrodkowany pionowo */
+    width: 96%;
+
+    background-color: rgb(123, 124, 124);
+    padding: 20px;
+    font-size: 16px;
+    box-shadow: 0 10px 10px rgba(102, 100, 100, 0.2);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+}
+
+.profile-info strong {
+    font-weight: bold;
+}
+
+.profile-info p {
+    margin: 0;
+    font-weight: normal;
+}
+
+.article-button {
+    font-size: 16px;
+    width: auto;
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.article-button:hover {
+    background-color: #4a088a;
+}
+
+.article-list {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Artykuły będą ułożone pionowo */
+    align-items: center; /* Wyśrodkowanie artykułów poziomo */
+}
+
+.list-title {
+    color: black;
+}
+
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.MyArticle {
+    background-color: white;
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.MyComment {
+    background-color: white;
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.content {
+    margin-top: 10px;
+}
+
+.counter {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.counter:hover {
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+.followers-list, .following-list {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.follower-card {
+    background-color: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -30,6 +30,10 @@
   display: flex;
 }
 
+.pinned-label{
+  font-size: 12px;
+}
+
 .author-container .article-author-button {
   background: transparent;
   border: none;

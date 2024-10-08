@@ -20,10 +20,12 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(1);
+    const [sortOption, setSortOption] = useState('');
+    const [selectedSortOption, setSelectedSortOption] = useState("");
 
-    const fetchArticles = async () => {
+    const fetchArticles = async (sortOption) => {
         try {
-            const data = await getArticles({ page: currentPage, items: itemsPerPage });
+            const data = await getArticles({ page: currentPage, items: itemsPerPage, ...sortOption });
             setArticles(data.items);
             setShowArticles(true);
             setShowForm(false);
@@ -74,35 +76,58 @@ const Home = () => {
     const showGetArticlesButton = !showForm && !showArticles;
 
     const userData = async () => {
-        const res = await getUser(localStorage.userId);
-        const data = await res.json()
+        const data = await getUser(localStorage.userId);
         setUserName(data.firstName)
     }
 
     useEffect(() => {
         userData()
         if (showArticles) {
-            fetchArticles();
+            fetchArticles(sortOption);
         }
-    }, [itemsPerPage, currentPage]);
+    }, [itemsPerPage, currentPage, sortOption]);
 
     const handleAuthorClick = async (authorId) => {
-        //setLoading(true);
         try {
-            const response = await getUser(authorId);
-            if (response.ok) {
-                const userData = await response.json();
-                navigate('/profile', { state: { authorData: userData } });
-            } else {
-                console.error('Failed to fetch user data:', response);
-            }
+            const data = await getUser(authorId);
+          
+               
+                navigate('/profile', { state: { authorData: data } });
+           
         } catch (error) {
             console.error('Error fetching user data:', error);
-        } finally {
-            //setLoading(false);
         }
     };
 
+    const handleSortChange = (event) => {
+        const selectedOption = event.target.value;
+        let sortParam = '';
+        let orderParam = '';
+        setSelectedSortOption(selectedOption)
+
+        switch (selectedOption) {
+            case 'dateAsc':
+                sortParam = 'postedDate';
+                orderParam = 'asc';
+                break;
+            case 'dateDesc':
+                sortParam = 'postedDate';
+                orderParam = 'desc';
+                break;
+            case 'likesAsc':
+                sortParam = 'likesNumber';
+                orderParam = 'asc';
+                break;
+            case 'likesDesc':
+                sortParam = 'likesNumber';
+                orderParam = 'desc';
+                break;
+            default:
+                break;
+        }
+        const sortOption = { sort: sortParam, order: orderParam };
+        setSortOption(sortOption);
+    };
     return (
         <div>
             <div className='home'>
@@ -118,6 +143,13 @@ const Home = () => {
                                     <option value={10}>10</option>
                                     <option value={15}>15</option>
                                     <option value={20}>20</option>
+                                </select>
+                                <select className='order-select' value={selectedSortOption}  onChange={handleSortChange}>
+                                    <option value="">Sortuj według...</option>
+                                    <option value="dateAsc">Data - rosnąco</option>
+                                    <option value="dateDesc">Data - malejąco</option>
+                                    <option value="likesAsc">Liczba like - rosnąco</option>
+                                    <option value="likesDesc">Liczba like - malejąco</option>
                                 </select>
                             </div>
                             <button className='close-button' onClick={reset}>close</button>

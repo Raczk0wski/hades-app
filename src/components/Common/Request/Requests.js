@@ -1,5 +1,5 @@
-export const getArticles = async ({ page = 1 , items =10 } = {}) => {
-    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/all?page=${page}&size=${items}&sortBy=postedDate&sort=desc`, {
+export const getArticles = async ({ page = 1 , items =10 , sort = 'postedDate' , order = 'desc'} = {}) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/all?page=${page}&size=${items}&sortBy=${sort}&sort=${order}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -27,6 +27,20 @@ export const addArticle = async (title, content) => {
     }
 };
 
+export const deleteArticle = async (articleId) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/delete?id=${articleId}`, {
+        method: 'Delete',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`,
+            'Accept': '*'
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to insert new article', response);
+    }
+};
+
 export const getUser = async (id) => {
     const response = await interceptedFetch(`http://localhost:8080/api/v1/users/get?id=${id}`, {
         method: 'GET',
@@ -38,7 +52,21 @@ export const getUser = async (id) => {
     if (!response.ok) {
         throw new Error('Failed to fetch articles', response);
     }
-    return response;
+    return response.json();
+};
+
+export const getArticleForUser = async (id) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/from?id=${id}&page=1&size=100&sortBy=postedDate&sort=desc`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+    }
+    return response.json();
 };
 
 async function interceptedFetch(url, options) {

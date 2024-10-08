@@ -5,16 +5,7 @@ import { getUser } from '../Request/Requests';
 import CommentList from '../Comments/Comments'
 import CommentForm from '../Comments/CommentForm'
 import { getComments } from '../Request/Comments';
-
-function dateFormat(data) {
-    const date = new Date(data);
-    const rrrr = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const gg = String(date.getHours()).padStart(2, '0');
-    const mi = String(date.getMinutes()).padStart(2, '0');
-    return `${gg}:${mi} ${dd}-${mm}-${rrrr} `;
-}
+import { dateFormat } from '../Patterns/DatePattern';
 
 const ArticleList = ({ articlesProp }) => {
     const navigate = useNavigate();
@@ -26,6 +17,7 @@ const ArticleList = ({ articlesProp }) => {
     const [editedContent, setEditedContent] = useState('');
     const [editedTitleArray, setEditedTitleArray] = useState([]);
     const [editedContentArray, setEditedContentArray] = useState([]);
+    const [comments, setComments] = useState([]);
 
     useEffect(() => {
         setArticles(articlesProp);
@@ -49,13 +41,10 @@ const ArticleList = ({ articlesProp }) => {
     const handleAuthorClick = async (authorId) => {
         setLoading(true);
         try {
-            const response = await getUser(authorId);
-            if (response.ok) {
-                const userData = await response.json();
-                navigate('/profile', { state: { authorData: userData } });
-            } else {
-                console.error('Failed to fetch user data:', response);
-            }
+            const userData = await getUser(authorId);
+
+            navigate('/profile', { state: { authorData: userData } });
+
         } catch (error) {
             console.error('Error fetching user data:', error);
         } finally {
@@ -100,17 +89,6 @@ const ArticleList = ({ articlesProp }) => {
 
     const loggedInUserId = parseInt(localStorage.userId)
 
-    const handleEditClick = (index) => {
-        // Ustawiamy stan edycji na true dla konkretnego artykułu
-        const newIsEditingArray = [...isEditingArray];
-        newIsEditingArray[index] = true;
-        setIsEditingArray(newIsEditingArray);
-
-        // Ustawiamy edytowany tytuł i zawartość artykułu
-        setEditedTitle(articles[index].title);
-        setEditedContent(articles[index].content);
-    };
-
     const handleSaveClick = async (index, updatedTitle, updatedContent) => {
         const newIsEditingArray = [...isEditingArray];
         newIsEditingArray[index] = false;
@@ -132,7 +110,6 @@ const ArticleList = ({ articlesProp }) => {
             });
 
             if (response.ok) {
-                // Aktualizuj stan artykułu tylko wtedy, gdy odpowiedź jest udana
                 const updatedArticles = [...articles];
                 updatedArticles[index].title = updatedTitle;
                 updatedArticles[index].content = updatedContent;
@@ -152,23 +129,41 @@ const ArticleList = ({ articlesProp }) => {
         newIsEditingArray[index] = !isEditingArray[index];
         setIsEditingArray(newIsEditingArray);
 
-        // Jeśli tryb edycji jest aktywny, pobierz edytowane wartości dla tego artykułu z odpowiednich tablic
         if (!isEditingArray[index]) {
             setEditedTitle(editedTitleArray[index] || articles[index].title);
             setEditedContent(editedContentArray[index] || articles[index].content);
         }
     };
 
-    const handleSaveComment = (index, commentContent) => {
-        // Obsługa zapisywania komentarza
-    };
+    const updateComments = (newCommentData) => {
 
+        const updatedComments = [...comments, newCommentData];
+        setComments(updatedComments);
+
+
+        const updatedArticles = articles.map(article => {
+            if (article.id === newCommentData.articleId) {
+                return { ...article, commentsNumber: article.commentsNumber + 1 };
+            }
+            return article;
+        });
+        setArticles(updatedArticles);
+
+
+        if (selectedArticle && selectedArticle.id === newCommentData.articleId) {
+            setSelectedArticle(prevSelected => ({
+                ...prevSelected,
+                commentsNumber: prevSelected.commentsNumber + 1
+            }));
+        }
+    };
 
     return (
         <div className='article-list'>
             <h1 className='list-title'>Lista Artykułów</h1>
             {articles.map((article, index) => (
                 <div key={article.id} className={`Article article-${index + 1}`}>
+                    {article.pinned && <span className="pinned-label">Pinned</span>}
                     <div className="title-container">
                         {isEditingArray[index] ? (
                             <input
@@ -180,10 +175,10 @@ const ArticleList = ({ articlesProp }) => {
                         ) : (
                             <h2 className='title'>{article.title}</h2>
                         )}
-                        {loggedInUserId === article.user.id && !isEditingArray[index] ? (
+                        {loggedInUserId === article.author.id && !isEditingArray[index] ? (
                             <button className="edit-button" onClick={() => toggleEdit(index)}>Edit</button>
                         ) : null}
-                        {loggedInUserId === article.user.id && isEditingArray[index] ? (
+                        {loggedInUserId === article.author.id && isEditingArray[index] ? (
                             <>
                                 <button className="article-save-button" onClick={() => handleSaveClick(index, editedTitle, editedContent)}>Save</button>
                                 <button className="article-close-button" onClick={() => toggleEdit(index)}>Close</button>
@@ -202,8 +197,8 @@ const ArticleList = ({ articlesProp }) => {
                         <p className='content'>{article.content}</p>
                     )}
                     <div className="author-container">
-                        <button className='article-author-button' onClick={() => handleAuthorClick(article.user.id)} disabled={loading}>
-                            {loading ? 'Loading...' : `${article.user.firstName} ${article.user.lastName}`}
+                        <button className='article-author-button' onClick={() => handleAuthorClick(article.author.id)} disabled={loading}>
+                            {loading ? 'Loading...' : `${article.author.firstName} ${article.author.lastName}`}
                         </button>
                         <p className='article-author-date'>{article.updated ? `Edited: ${dateFormat(article.updatedAt)}` : `Posted: ${dateFormat(article.postedDate)}`}</p>
                     </div>
@@ -213,14 +208,19 @@ const ArticleList = ({ articlesProp }) => {
                             {article.isLiked ? 'Liked' : 'Like'}
                         </button>
                         {article.commentsNumber > 0 && (
-                        <button className='comment-button' onClick={() => toggleComments(article)}>
-                            {selectedArticle === article ? 'Close Comments' : `Comments (${article.commentsNumber})`}
-                        </button>
+                            <button className='comment-button' onClick={() => toggleComments(article)}>
+                                {selectedArticle === article ? 'Close Comments' : `Comments (${article.commentsNumber})`}
+                            </button>
                         )}
                     </div>
-                    {selectedArticle === article && (
-                        <CommentList articleId={article.id} />
-                    )}
+                    <div>
+                        {selectedArticle === article && (
+                            <CommentList articleId={article.id} comments={article.comments} />
+                        )}
+                    </div>
+                    <div>
+                        <CommentForm articleId={article.id} updateComments={updateComments} />
+                    </div>
                 </div>
             ))}
         </div>
