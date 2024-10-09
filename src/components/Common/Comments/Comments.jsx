@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getComments, likeComment, deleteComment } from '../Request/Comments';
+import { useNavigate } from 'react-router-dom';
 import './Comments.css';
 import TrashIcon from './trash';
+import { getUser } from '../../Common/Request/Requests'
 
 function dateFormat(data) {
     const date = new Date(data);
@@ -14,25 +16,35 @@ function dateFormat(data) {
 }
 
 const CommentList = ({ articleId }) => {
+    const navigate = useNavigate();
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchComments = async () => {
         setLoading(true);
         try {
-            const response = await getComments(articleId);
-            if (response.ok) {
-                const responseData = await response.json();
-                if (responseData.items) {
-                    setComments(responseData.items);
-                } else {
-                    console.error('Invalid comments data:', responseData);
-                }
+            const data = await getComments(articleId);
+
+            if (data) {
+                setComments(data);
             } else {
-                console.error('Failed to fetch comments:', response);
+                console.error('Invalid comments data:', data);
             }
+
         } catch (error) {
             console.error('Error fetching comments:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAuthorClick = async (authorId) => {
+        setLoading(true);
+        try {
+            const userData = await getUser(authorId);
+            navigate('/profile', { state: { authorData: userData } });
+        } catch (error) {
+            console.error('Error fetching user data:', error);
         } finally {
             setLoading(false);
         }
@@ -85,14 +97,14 @@ const CommentList = ({ articleId }) => {
     return (
         <div>
             {comments.map((comment, index) => (
-                <div key={comment.id} className={`Comment comment-${index + 1}`}>
+                <div key={comment.id} className={`Comment comment-${index + 1} ${comment.pinned ? 'pinned' : ''}`}>
                     <hr />
                     <div className='Main'>
                         <p className='content'>{comment.content}</p>
                         <div className='delete-icon'>
-                        {comment.author.id === parseInt(localStorage.userId) && (
-                            <TrashIcon onClick={() => handleDeleteClick(comment.id)}></TrashIcon>
-                        )}
+                            {comment.author.id === parseInt(localStorage.userId) && (
+                                <TrashIcon onClick={() => handleDeleteClick(comment.id)}></TrashIcon>
+                            )}
                         </div>
                     </div>
                     <div className="author-container">
@@ -100,7 +112,9 @@ const CommentList = ({ articleId }) => {
                         <button className={`like-button ${comment.liked ? 'liked' : ''}`} onClick={() => handleLikeClick(comment.id, comment.liked)}>
                             {comment.liked ? 'Liked' : 'Like'}
                         </button>
-                        <button className='author-button'>{comment.author ? `${comment.author.firstName} ${comment.author.lastName}` : 'Unknown'}</button>
+                        <button className='author-button' onClick={() => handleAuthorClick(comment.author.id)}>
+                            {comment.author ? `${comment.author.firstName} ${comment.author.lastName}` : 'Unknown'}
+                        </button>
                         <p className='date'>{comment.updated ? `Edited: ${dateFormat(comment.updatedAt)}` : `Posted: ${dateFormat(comment.postedDate)}`}</p>
                     </div>
                 </div>

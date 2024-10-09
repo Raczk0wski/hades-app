@@ -1,4 +1,4 @@
-export const getArticles = async ({ page = 1 , items =10 , sort = 'postedDate' , order = 'desc'} = {}) => {
+export const getArticles = async ({ page = 1, items=1, sort = 'postedDate', order = 'desc' } = {}) => {
     const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/get/all?page=${page}&size=${items}&sortBy=${sort}&sort=${order}`, {
         method: 'GET',
         headers: {
@@ -69,8 +69,22 @@ export const getArticleForUser = async (id) => {
     return response.json();
 };
 
+export const likeArticle = async (articleId) => {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/like?id=${articleId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+    }
+    return response.ok;
+};
+
 async function interceptedFetch(url, options) {
-    
+
     const response = await fetch(url, options);
 
     if (response.status === 401) {

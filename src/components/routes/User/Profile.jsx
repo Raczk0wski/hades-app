@@ -47,6 +47,7 @@ const Profile = () => {
             setArticles(data);
             setShowFollowing(false);
             setShowFollowers(false);
+            setShowComments(false)
             setShowArticles(true);
         } catch (error) {
             console.error('Error fetching articles:', error);
@@ -96,8 +97,9 @@ const Profile = () => {
             const data = await response.json();
             setFollowersData(data);
             setShowArticles(false);
-            setShowFollowers(true);
+            setShowComments(false);
             setShowFollowing(false);
+            setShowFollowers(true);
         } catch (error) {
             console.error('Error fetching followers:', error);
         } finally {
@@ -125,8 +127,9 @@ const Profile = () => {
             const data = await response.json();
             setFollowingData(data);
             setShowArticles(false);
-            setShowFollowing(true);
             setShowFollowers(false);
+            setShowComments(false)
+            setShowFollowing(true);
         } catch (error) {
             console.error('Error fetching following:', error);
         } finally {
@@ -181,18 +184,20 @@ const Profile = () => {
 
             {loading && <p>Loading...</p>}
 
-            {showFollowers && followersData.length > 0 && (
+            {showFollowers ? (followersData.length > 0 ? (
                 <div className='followers-list'>
                     <h1 className='list-title'>Lista Obserwujących</h1>
                     {followersData.map((follower) => (
                         <div key={follower.id} className="follower-card">
                             <h3>Imie Nazwisko: {follower.firstName} {follower.lastName}</h3>
                             <p>Email: {follower.email}</p>
-
                         </div>
                     ))}
                 </div>
-            )}
+            ) : (
+                <p>Nie obserwujesz jeszcze nikogo.</p>
+            )
+            ) : null}
 
             {showFollowing ? (followingData.length > 0 ? (
                 <div className='following-list'>
@@ -216,8 +221,10 @@ const Profile = () => {
                         <div key={comment.id} className={`MyComment comment-${index + 1}`}>
                             <TrashIcon onClick={() => handleDeleteClick()} />
                             <p className='content'>{comment.content}</p>
-                            <p style={{ fontSize: '12px', margin: '0px' }}>Likes: {comment.likesNumber}</p>
-                            <p style={{ fontSize: '12px', margin: '0px' }}>Posted: {dateFormat(comment.postedDate)}</p>
+                            <div className="comment-info"> {/* Nowa klasa dla info komentarzy */}
+                                <p>Likes: {comment.likesNumber}</p>
+                                <p>Posted: {dateFormat(comment.postedDate)}</p>
+                            </div>
                         </div>
 
                     ))}
@@ -236,6 +243,12 @@ const Profile = () => {
                                 <TrashIcon onClick={() => handleDeleteClick(article.id)} />
                             </div>
                             <p className='content'>{article.content}</p>
+                            <div className="article-info">
+                                <p>Liczba polubień: {article.likesCount}</p>
+                                <p>Data Publikcji: {dateFormat(article.postedDate)}</p>
+                                <p>Status: {article.status}</p>
+                                <p>Liczba komentarzy: {article.commentsNumber}</p>
+                            </div>
                         </div>
                     ))}
                 </div>

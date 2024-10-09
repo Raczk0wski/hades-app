@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CreateComment.css';
+import CommentList from './Comments';
 
 const CommentForm = ({ articleId, updateComments }) => {
     const [commentContent, setCommentContent] = useState('');
@@ -34,17 +35,15 @@ const CommentForm = ({ articleId, updateComments }) => {
             });
 
             if (response.ok) {
+                const newCommentData = await response.json();
+                updateComments(newCommentData, articleId);
                 setCommentContent('');
                 setIsTextareaActive(false);
-                const newCommentData = await response.json();
-                updateComments(newCommentData);
             } else {
-                // Obsługa przypadku, gdy odpowiedź nie jest ok (status !== 200)
-                // Tutaj możesz dodać odpowiednią logikę lub wyświetlić komunikat błędu
+                console.error('Error while saving comment');
             }
         } catch (error) {
             console.error('Error saving comment:', error);
-            // Obsługa błędu w przypadku problemów z połączeniem lub innymi błędami
         }
     };
 

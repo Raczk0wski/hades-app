@@ -1,194 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import ArticleList from '../../Common/GetArticles/Articles';
-import { getArticles, getUser } from '../../Common/Request/Requests';
-import CreateArticleForm from '../../Common/Forms/createArticle';
-import './Home.css'
-import '../../Common/Forms/createArticle.css'
-import getComments from '../../Common/Request/Comments';
+import './Home.css';
+import { getUser } from '../../Common/Request/Requests';
 
 const Home = () => {
     const navigate = useNavigate();
-    const [userName, setUserName] = useState('');
-    const [articles, setArticles] = useState([]);
-    const [showArticles, setShowArticles] = useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [creatingArticle, setCreatingArticle] = useState(false);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalItems, setTotalItems] = useState(1);
-    const [sortOption, setSortOption] = useState('');
-    const [selectedSortOption, setSelectedSortOption] = useState("");
+    const [userData, setUserData] = useState(null);
+    const [userName, setUserName] = useState(null);
 
-    const fetchArticles = async (sortOption) => {
+    const fetchUserData = async () => {
         try {
-            const data = await getArticles({ page: currentPage, items: itemsPerPage, ...sortOption });
-            setArticles(data.items);
-            setShowArticles(true);
-            setShowForm(false);
-            setCreatingArticle(false);
-            setTotalPages(data.meta.totalPages);
-            setTotalItems(data.meta.totalItems);
-        } catch (error) {
-            console.error('Error fetching articles:', error);
-        }
-    };
-
-    const handleTitleChange = (event) => {
-        setTitle(event.target.value);
-    };
-
-    const handleContentChange = (event) => {
-        setContent(event.target.value);
-    };
-
-    const reset = () => {
-        setArticles([])
-        setShowArticles(false)
-        setShowForm(false);
-        setCreatingArticle(false);
-    }
-
-    const cancelForm = () => {
-        setShowForm(false);
-        setTitle('');
-        setContent('');
-        setCreatingArticle(false);
-    }
-
-    const logOut = () => {
-        navigate('/LogIn');
-        localStorage.removeItem('token');
-    };
-
-    const openCreateArticleForm = () => {
-        setShowForm(true);
-        setShowArticles(false);
-    };
-
-    const goToPage = (page) => {
-        setCurrentPage(page);
-    };
-
-    const showGetArticlesButton = !showForm && !showArticles;
-
-    const userData = async () => {
-        const data = await getUser(localStorage.userId);
-        setUserName(data.firstName)
-    }
-
-    useEffect(() => {
-        userData()
-        if (showArticles) {
-            fetchArticles(sortOption);
-        }
-    }, [itemsPerPage, currentPage, sortOption]);
-
-    const handleAuthorClick = async (authorId) => {
-        try {
-            const data = await getUser(authorId);
-          
-               
-                navigate('/profile', { state: { authorData: data } });
-           
+            const data = await getUser(localStorage.userId);
+            setUserName(data.firstName);
+            setUserData(data);
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
     };
 
-    const handleSortChange = (event) => {
-        const selectedOption = event.target.value;
-        let sortParam = '';
-        let orderParam = '';
-        setSelectedSortOption(selectedOption)
+    useEffect(() => {
+        fetchUserData();
+    }, []);
 
-        switch (selectedOption) {
-            case 'dateAsc':
-                sortParam = 'postedDate';
-                orderParam = 'asc';
-                break;
-            case 'dateDesc':
-                sortParam = 'postedDate';
-                orderParam = 'desc';
-                break;
-            case 'likesAsc':
-                sortParam = 'likesNumber';
-                orderParam = 'asc';
-                break;
-            case 'likesDesc':
-                sortParam = 'likesNumber';
-                orderParam = 'desc';
-                break;
-            default:
-                break;
-        }
-        const sortOption = { sort: sortParam, order: orderParam };
-        setSortOption(sortOption);
+    const goToArticles = () => {
+        navigate('/articles');
     };
-    return (
-        <div>
-            <div className='home'>
-                {!showArticles && showGetArticlesButton && <h1 className='main-copy'>Witaj, {userName}</h1>}
-                <container className='navButtons'>
-                    <div>
-                        {showGetArticlesButton && <button className='button' onClick={fetchArticles}>Articles</button>}
-                    </div>
-                    {showArticles &&
-                        <container className='main-container'>
-                            <div>
-                                <select className='pagination-select' id="itemsPerPage" value={itemsPerPage} onChange={(e) => setItemsPerPage(e.target.value)}>
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                </select>
-                                <select className='order-select' value={selectedSortOption}  onChange={handleSortChange}>
-                                    <option value="">Sortuj według...</option>
-                                    <option value="dateAsc">Data - rosnąco</option>
-                                    <option value="dateDesc">Data - malejąco</option>
-                                    <option value="likesAsc">Liczba like - rosnąco</option>
-                                    <option value="likesDesc">Liczba like - malejąco</option>
-                                </select>
-                            </div>
-                            <button className='close-button' onClick={reset}>close</button>
-                        </container>
-                    }
-                    <div>
-                        {showArticles && !creatingArticle && articles.length > 0 && <ArticleList articlesProp={articles} />}
-                    </div>
 
-                    <div>
-                        {!showForm && showGetArticlesButton && <button className='button' onClick={openCreateArticleForm}>Create Article</button>}
-                    </div>
-                    <div className='formContainer'>
-                        {showForm && <CreateArticleForm onSuccess={reset} onCancel={cancelForm} onTitleChange={handleTitleChange} onContentChange={handleContentChange} />}
-                    </div>
-                    {showArticles && (
-                        <div>
-                            <div className='pagination'>
-                                {Array.from({ length: totalPages }, (_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => goToPage(index + 1)}
-                                        className={currentPage === index + 1 ? 'active' : ''}
-                                    >
-                                        {index + 1}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {!showArticles && showGetArticlesButton && <div>
-                        <button className='button' onClick={() => handleAuthorClick(localStorage.userId)}>Your profile</button>
-                    </div>}
-                    {!showArticles && showGetArticlesButton && <div>
-                        <button className='button' onClick={logOut}>log out</button>
-                    </div>}
-                </container>
+    const goToProfile = () => {
+        navigate('/profile', { state: { authorData: userData } });
+    };
+
+    const logOut = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    const goToCreateArticle = () => {
+        navigate('/create');
+    };
+
+    return (
+        <div className="home">
+            <h1 className="main-copy">Witaj, {userName}</h1>
+            <div className="navButtons">
+                <button className="button" onClick={goToArticles}>Explore</button>
+                <button className="button" >My Board</button>
+                <button className="button" onClick={() => goToCreateArticle()}>Create Article</button>
+                <button className="button" onClick={() => goToProfile()}>Your profile</button>
+                <button className="button" onClick={logOut}>Log out</button>
             </div>
-        </div >
+        </div>
     );
 }
 

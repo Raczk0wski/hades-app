@@ -12,12 +12,10 @@ import Home from './components/routes/Home'
 import LogIn from './components/routes/LogIn'
 import Profile  from './components/routes/User';
 import './App.css';
+import ArticleList from "./components/routes/Articles";
+import CreateArticleForm from "./components/Common/Forms/createArticle";
 
 const router = createBrowserRouter([
-  {
-    path: "/Home",
-    element: <Home />,
-  },
   {
     path: "/login",
     element: <LogIn />,
@@ -27,8 +25,20 @@ const router = createBrowserRouter([
     element: <LogIn />,
   },
   {
+    path: "/Home",
+    element: <Home />,
+  },
+  {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/articles",
+    element: <ArticleList />,
+  },
+  {
+    path: "/create",
+    element: <CreateArticleForm />,
   }
 ]);
 

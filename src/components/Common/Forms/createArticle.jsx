@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { addArticle } from '../Request/Requests';
 import './createArticle.css'
 
-const CreateArticleForm = ({ onSuccess, onCancel }) => {
+const CreateArticleForm = () => {
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
@@ -21,35 +24,53 @@ const CreateArticleForm = ({ onSuccess, onCancel }) => {
             await addArticle(title, content);
             setTitle('');
             setContent('');
-            onSuccess();
+            setShowModal(true);
         } catch (error) {
             console.error('Error creating article:', error);
         }
     };
 
     const handleCancel = () => {
-        onCancel();
         setTitle('');
         setContent('');
+        navigate('/home');
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        //navigate('/articles');
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <container className='formContainer'>
-                <div>
-                    <label className='label'>Title:</label>
-                    <input className='titleInput' type='text' value={title} onChange={handleTitleChange} required />
+        <>
+            <form onSubmit={handleSubmit}>
+                <div className='formContainer'>
+                    <div>
+                        <label className='label'>Title:</label>
+                        <input className='titleInput' type='text' value={title} onChange={handleTitleChange} required />
+                    </div>
+                    <div>
+                        <label className='label'>Content:</label>
+                        <textarea className='contentInput' rows="4" cols="50" value={content} onChange={handleContentChange} required />
+                    </div>
+                    <div className='formButtons'>
+                        <button className='closeForm' type='button' onClick={handleCancel}>Cancel</button>
+                        <button className='create' type='submit'>CREATE</button>
+                    </div>
                 </div>
-                <div>
-                    <label className='label'>Content:</label>
-                    <textarea className='contentInput' rows="4" cols="50" value={content} onChange={handleContentChange} required />
+            </form>
+            {showModal && (
+                <div className="modal">
+                    <div className="modalContent">
+                        <span className="close" onClick={handleCloseModal}>&times;</span>
+                        <p>Artykuł został dodany!</p>
+                        <p>ale nie zobaczysz go jeszcze w systemie, twój artykuł oczekuje na przegląd i potwierdzenie przez moderatora.</p>
+                        <p>Zostaniesz poinformowany gdy twój artykuł będzie widoczny dla innych!</p>
+                        <p>W tym czasie możesz dodać kolejny artykuł lub wybrać się na odkrywanie ludzi i ciekawych publikacji.</p>
+                    </div>
                 </div>
-                <container className='formButtons'>
-                    <button className='close' type='button' onClick={onCancel}>Cancel</button>
-                    <button className='create' type='submit'>CREATE</button>
-                </container>
-            </container>
-        </form>
+            )}
+        </>
     );
 };
 

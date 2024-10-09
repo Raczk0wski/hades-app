@@ -1,5 +1,5 @@
 export const getComments = async (articleId) => {
-    const response = await interceptedFetch(`http://localhost:8080/api/v1/comments?id=${articleId}&page=1&size=100&sort=desc`, {
+    const response = await interceptedFetch(`http://localhost:8080/api/v1/comments/article?id=${articleId}&page=1&size=100&sort=desc`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ export const getComments = async (articleId) => {
     if (!response.ok) {
         throw new Error('Failed to fetch Comments', response);
     }
-    return response;
+    return response.json();
 };
 
 export const likeComment = async (articleId) => {

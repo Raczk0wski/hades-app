@@ -1,4 +1,4 @@
-.Article {
+.article {
   background-color: rgb(199, 210, 216);
   width: 1000px;
   height: auto;
@@ -8,9 +8,16 @@
   border-radius: 20px;
 }
 
-.list-title {
+.aritcle-list-title {
   font-size: 24px;
-  color: antiquewhite;
+  color: rgb(253, 253, 252);
+}
+
+.article.pinned {
+  border: 2px solid gold;
+  background-color: #fff7e6;
+  padding: 10px;
+  margin-bottom: 15px;
 }
 
 .title {
@@ -23,7 +30,8 @@
 
 
 .aricle-list {
-  position: fixed
+  position: relative;
+  overflow: hidden;
 }
 
 .author-container {
@@ -191,3 +199,55 @@
   width: 980px;
   margin: 0;
 }
+
+.comment-info,
+.article-info {
+    font-size: 12px;
+    margin: 2px 0;
+    display: flex; 
+    justify-content: space-between;
+}
+
+.comment-info > p,
+.article-info > p {
+    margin: 0;
+    margin-right: 10px;
+}
+
+.filters-container {
+  display: flex;
+  justify-content: center; /* Wyśrodkuj w poziomie */
+  align-items: center; /* Wyrównaj pionowo */
+  gap: 20px; /* Odstępy między poszczególnymi polami */
+  margin-bottom: 20px; /* Odstęp od listy artykułów */
+  padding: 10px;
+}
+
+.filters-container .filter {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Wyrównaj etykiety i select w pionie */
+  margin-right: 15px;
+}
+
+.filters-container label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.filters-container select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #b8ae7a;
+  border-radius: 4px;
+  background-color: #f8f6f6;
+  cursor: pointer;
+}
+
+.filters-container select:hover {
+  border-color: #8ad4ce;
+}
+
+
+

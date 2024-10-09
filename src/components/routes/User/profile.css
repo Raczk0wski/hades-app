@@ -11,13 +11,19 @@
 .content-section {
     display: flex;
     justify-content: space-around;
-    align-items: flex-start; /* Aby tekst nie był wyśrodkowany pionowo */
+    align-items: flex-start;
+    /* Aby tekst nie był wyśrodkowany pionowo */
     width: 96%;
 
     background-color: rgb(123, 124, 124);
     padding: 20px;
     font-size: 16px;
     box-shadow: 0 10px 10px rgba(102, 100, 100, 0.2);
+}
+
+.list-title {
+    font-size: 24px;
+    color: rgb(3, 3, 3);
 }
 
 .profile-info {
@@ -32,6 +38,7 @@
 }
 
 .profile-info p {
+    padding-top: 12px;
     margin: 0;
     font-weight: normal;
 }
@@ -53,14 +60,13 @@
 
 .article-list {
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 100%;
     display: flex;
-    flex-direction: column; /* Artykuły będą ułożone pionowo */
-    align-items: center; /* Wyśrodkowanie artykułów poziomo */
-}
-
-.list-title {
-    color: black;
+    flex-direction: column;
+    /* Artykuły będą ułożone pionowo */
+    align-items: center;
+    /* Wyśrodkowanie artykułów poziomo */
 }
 
 .title-container {
@@ -112,7 +118,8 @@
     background-color: transparent;
 }
 
-.followers-list, .following-list {
+.followers-list,
+.following-list {
     margin-top: 20px;
     width: 100%;
 }
