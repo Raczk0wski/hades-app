@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TrashIcon from '../../../components/Common/Comments/trash.jsx';
 import './profile.css';
-import { deleteArticle, getArticleForUser } from '../../Common/Request/Requests';
+import { deleteArticle, getArticleForUser, getPendingArticlesForUser } from '../../Common/Request/Requests';
 import { getCommentsForUser } from '../../Common/Request/Comments.js';
 import { dateFormat } from '../../Common/Patterns/DatePattern.js';
 
@@ -18,6 +18,42 @@ const Profile = () => {
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
     const [showComments, setShowComments] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(authorData.isFollowing || false);
+    const [activeTab, setActiveTab] = useState('accepted');
+
+    const loggedInUserId = localStorage.getItem('userId');
+
+    useEffect(() => {
+        if (activeTab === 'accepted') {
+            fetchAcceptedArticles();
+        } else {
+            fetchPendingArticles();
+        }
+    }, [activeTab]);
+
+    const fetchAcceptedArticles = async () => {
+        setLoading(true);
+        try {
+            const data = await getArticleForUser(authorData.id);
+            setArticles(data);
+        } catch (error) {
+            console.error('Error fetching accepted articles:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchPendingArticles = async () => {
+        setLoading(true);
+        try {
+            const data = await getPendingArticlesForUser(authorData.id);
+            setArticles(data);
+        } catch (error) {
+            console.error('Error fetching pending articles:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleDeleteClick = async (articleId) => {
         try {
@@ -43,11 +79,12 @@ const Profile = () => {
                 setShowArticles(false);
                 return;
             }
+            setActiveTab('accepted')
             const data = await getArticleForUser(authorData.id);
             setArticles(data);
             setShowFollowing(false);
             setShowFollowers(false);
-            setShowComments(false)
+            setShowComments(false);
             setShowArticles(true);
         } catch (error) {
             console.error('Error fetching articles:', error);
@@ -141,8 +178,43 @@ const Profile = () => {
         setShowArticles(!showArticles);
     };
 
+    const handleFollowClick = async () => {
+        setLoading(true);
+        try {
+            const endpoint = isFollowing ? 'unfollow' : 'follow';
+            const response = await fetch(`http://localhost:8080/api/v1/users/${authorData.id}/${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.token}`
+                },
+            });
+
+            if (response.ok) {
+                setIsFollowing(!isFollowing);
+            } else {
+                console.error('Błąd przy aktualizacji obserwacji');
+            }
+        } catch (error) {
+            console.error('Błąd sieci', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="profile-container">
+            {loggedInUserId != authorData.id && (
+                <div className="profile-info">
+                    <button
+                        className={isFollowing ? 'follow-button following' : 'follow-button'}
+                        onClick={handleFollowClick}
+                        disabled={loading}
+                    >
+                        {loading ? '...' : isFollowing ? 'Obserwujesz' : 'Obserwuj'}
+                    </button>
+                </div>
+            )}
             <div className='content-section profile-stats'>
                 <div className="profile-info">
                     <strong>Imię Nazwisko:</strong>
@@ -195,7 +267,7 @@ const Profile = () => {
                     ))}
                 </div>
             ) : (
-                <p>Nie obserwujesz jeszcze nikogo.</p>
+                <p>Nikt Cie jeszcze nie obserwuje</p>
             )
             ) : null}
 
@@ -233,9 +305,31 @@ const Profile = () => {
 
             {loading && <p>Loading...</p>}
 
-            {showArticles && articles && articles.length > 0 && (
+            {showArticles && articles && (
                 <div className='article-list'>
-                    <h1 className='list-title'>Lista Artykułów</h1>
+                    {loggedInUserId == authorData.id && (<div className="tabs">
+                        <button
+                            className={activeTab === 'accepted' ? 'tab active' : 'tab'}
+                            onClick={() => setActiveTab('accepted')}
+                            disabled={loading}
+                        >
+                            Artykuły
+                        </button>
+                        <button
+                            className={activeTab === 'pending' ? 'tab active pending' : 'tab'}
+                            onClick={() => setActiveTab('pending')}
+                            disabled={loading}
+                        >
+                            Oczekujące
+                        </button>
+                    </div>
+                    )}
+                    {showArticles && articles.length>0 ? (
+                        <h1 className='list-title'>Lista Artykułów</h1>
+                    ):
+                    (
+                        <p>Nie masz oczekujących artykułów.</p>
+                    )}
                     {articles.map((article, index) => (
                         <div key={article.id} className={`MyArticle article-${index + 1}`}>
                             <div className="title-container">

@@ -131,3 +131,61 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.follow-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    width: auto;
+}
+
+.follow-button:hover{
+    background-color: #4CAF50;
+}
+
+.follow-button.following {
+    background-color: #f44336;
+    color: white;
+}
+
+.follow-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+}
+
+.tab {
+    background-color: transparent;
+    border: none;
+    padding-bottom: 0px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #000000;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: transparent;
+    color: rgb(10, 8, 8);
+    border-bottom: 2px solid #007bff;
+    width: 75px;
+    border-radius: 0%;
+}
+
+.tab.active.pending {
+    background-color: transparent;
+    color: rgb(10, 8, 8);
+    border-bottom: 2px solid #007bff;
+    width: 100px;
+    border-radius: 0%;
+}
+
+.tab:hover {
+    background-color: transparent; 
+}

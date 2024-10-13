@@ -69,6 +69,20 @@ export const getArticleForUser = async (id) => {
     return response.json();
 };
 
+export const getPendingArticlesForUser = async (id) => {
+    const response = await interceptedFetch(`http://localhost:8080/webapi/v1/article/get?id=${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+    }
+    return response.json();
+};
+
 export const likeArticle = async (articleId) => {
     const response = await interceptedFetch(`http://localhost:8080/api/v1/articles/like?id=${articleId}`, {
         method: 'POST',

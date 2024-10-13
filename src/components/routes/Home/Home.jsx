@@ -32,6 +32,7 @@ const Home = () => {
 
     const logOut = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
         navigate('/login');
     };
 
