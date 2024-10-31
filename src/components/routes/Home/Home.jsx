@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import { getUser } from '../../Common/Request/Requests';
+import NotificationComponent from '../../Common/websockets/NotificationComponent';
 
 const Home = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [userName, setUserName] = useState(null);
-
+    
     const fetchUserData = async () => {
         try {
             const data = await getUser(localStorage.userId);
@@ -49,7 +50,8 @@ const Home = () => {
                 <button className="button" onClick={() => goToCreateArticle()}>Create Article</button>
                 <button className="button" onClick={() => goToProfile()}>Your profile</button>
                 <button className="button" onClick={logOut}>Log out</button>
-            </div>
+            </div> 
+            <NotificationComponent/> 
         </div>
     );
 }

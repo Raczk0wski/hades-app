@@ -70,7 +70,7 @@ export const getArticleForUser = async (id) => {
 };
 
 export const getPendingArticlesForUser = async (id) => {
-    const response = await interceptedFetch(`http://localhost:8080/webapi/v1/article/get?id=${id}`, {
+    const response = await interceptedFetch(`http://localhost:8080/webapi/v1/article/get/from/user?id=${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
